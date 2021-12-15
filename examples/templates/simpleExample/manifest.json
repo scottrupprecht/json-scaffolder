@@ -1,0 +1,15 @@
+{
+  "name": "A Simple Example",
+  "templates": [
+    {
+      "templatePath": "helloWorld.txt.js",
+      "directoryTemplate": "output",
+      "filenameTemplate": "helloWorld.js.txt"
+    },
+    {
+      "templatePath": "helloWorld.txt.hbs",
+      "directoryTemplate": "output",
+      "filenameTemplate": "helloWorld.hbs.txt"
+    }
+  ]
+}

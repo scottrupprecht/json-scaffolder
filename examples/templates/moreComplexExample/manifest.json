@@ -1,0 +1,20 @@
+{
+  "name": "A More Complex Example",
+  "templates": [
+    {
+      "templatePath": "outputProvidedParams.json.js",
+      "directoryTemplate": "output",
+      "filenameTemplate": "{{firstName}}{{lastName}}ProvidedParams.json"
+    },
+    {
+      "templatePath": "package.json.js",
+      "directoryTemplate": "output",
+      "filenameTemplate": "{{firstName}}{{lastName}}-package.json"
+    },
+    {
+      "templatePath": "bio.txt.hbs",
+      "directoryTemplate": "output",
+      "filenameTemplate": "{{firstName}}{{lastName}}Bio.txt"
+    }
+  ]
+}

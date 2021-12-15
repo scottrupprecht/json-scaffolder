@@ -1,0 +1,46 @@
+{
+  "name": "json-scaffolder",
+  "version": "0.0.1",
+  "description": "A simple, unopinionated CLI that runs json files through a specified templates, with some help along the way.",
+  "author": "Scott Rupprecht",
+  "main": "./dist/tsc/cli.js",
+  "license": "MIT",
+  "bin": {
+    "json-scaffolder": "dist/tsc/cli.js"
+  },
+  "scripts": {
+    "cli": "ts-node ./src/cli.ts --noEmit",
+    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
+    "clean": "rm -rf dist build package",
+    "ts-node": "ts-node",
+    "build": "tsc -p tsconfig.json",
+    "tscompile": "tsc --noemit -p ."
+  },
+  "dependencies": {
+    "appdata-path": "^1.0.0",
+    "change-case": "^4.1.2",
+    "fs-extra": "^10.0.0",
+    "glob": "^7.2.0",
+    "handlebars": "^4.7.7",
+    "inquirer": "^8.2.0",
+    "lodash": "^4.17.21",
+    "pluralize": "^8.0.0",
+    "temp": "^0.9.4",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/glob": "^7.2.0",
+    "@types/inquirer": "^8.1.3",
+    "@types/lodash": "^4.14.177",
+    "@types/node": "^15.0.1",
+    "@types/pluralize": "0.0.29",
+    "@types/temp": "^0.9.1",
+    "@types/uuid": "^8.3.3",
+    "@typescript-eslint/eslint-plugin": "^4.19.0",
+    "@typescript-eslint/parser": "^4.19.0",
+    "eslint": "^7.22.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  }
+}

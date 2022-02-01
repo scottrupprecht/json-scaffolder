@@ -23,7 +23,7 @@ import {
 type HandlerParams = (
   templatePath: string,
   templateHelpers: Record<string,
-  TemplateDelegate>,
+    TemplateDelegate>,
   jsonInput: any,
   jsonInputs: any[]
 ) => string;
@@ -45,10 +45,11 @@ const templateHandlerMap: Record<string, HandlerParams> = {
   const templatesToRun = await promptTemplatesToRun(manifest);
   const helpers = getHelpersForTemplate(manifest.manifestPath);
 
-  const parsedJsonInputsToRun = await promptJsonInputPathsToRun(jsonInputPaths);
-  const jsonInputs = parsedJsonInputsToRun.map(parsedJsonInput => parsedJsonInput.parsedData);
+  const jsonInputPathsToCreate = await promptJsonInputPathsToCreate(jsonInputPaths);
+  const jsonInputs = jsonInputPaths.map(parsedJsonInput => parsedJsonInput.parsedData);
 
-  for (const jsonInput of jsonInputs) {
+  for (const jsonInputPath of jsonInputPaths) {
+    const jsonInput = jsonInputPath.parsedData;
     for (const template of templatesToRun) {
       const filename = Handlebars.compile(template.filenameTemplate)(jsonInput);
       const directory = Handlebars.compile(template.directoryTemplate)(jsonInput);
@@ -62,6 +63,10 @@ const templateHandlerMap: Record<string, HandlerParams> = {
 
       if(!handler) {
         throw new Error(`No handler defined for template extension: ${templateExtension}`);
+      }
+
+      if(!_.includes(jsonInputPathsToCreate, jsonInputPath.path)) {
+        continue;
       }
 
       fs.writeFileSync(outputFilePath, handler(template.resolvedTemplatePath, helpers, jsonInput, jsonInputs), 'utf-8');
@@ -131,6 +136,7 @@ async function loadManifest(templatesDirectoryPath: string) {
     message: 'What app template do you want to use?',
     choices: manifests.map(t => t.name),
     validate: (input) => !!_.trim(input),
+    loop: true,
   });
 
   const templateGroup = manifests.find(t => t.name === appTemplateName);
@@ -182,7 +188,7 @@ function loadManifests(templatesDirectoryPath: string): Manifest[] {
   });
 }
 
-async function promptJsonInputPathsToRun(jsonInputPaths: ParsedJsonInput[]) {
+async function promptJsonInputPathsToCreate(jsonInputPaths: ParsedJsonInput[]) {
   const choices = jsonInputPaths.map(jsonInputPath => path.basename(jsonInputPath.path));
   const { jsonInputPathsToRun } = await inquirer.prompt({
     type: 'checkbox',
@@ -190,10 +196,10 @@ async function promptJsonInputPathsToRun(jsonInputPaths: ParsedJsonInput[]) {
     message: 'What input JSON files would you like to process?',
     choices: choices,
     default: choices,
-    loop: false,
+    loop: true,
   });
 
-  return jsonInputPaths.filter(jsonInputPath => _.includes(jsonInputPathsToRun, path.basename(jsonInputPath.path)));
+  return jsonInputPaths.filter(jsonInputPath => _.includes(jsonInputPathsToRun, path.basename(jsonInputPath.path))).map(p => p.path);
 }
 
 async function promptTemplatesToRun(manifest: Manifest) {
@@ -204,7 +210,7 @@ async function promptTemplatesToRun(manifest: Manifest) {
     message: 'What templates do you want to apply?',
     choices: choices,
     default: choices,
-    loop: false,
+    loop: true,
   });
 
   return manifest.templates.filter(t => _.includes(templatesToRun, t.resolvedTemplatePath));

@@ -51,6 +51,19 @@ const templateHandlerMap: Record<string, HandlerParams> = {
   for (const jsonInputPath of jsonInputPaths) {
     const jsonInput = jsonInputPath.parsedData;
     for (const template of templatesToRun) {
+      if(template.promptBeforeProcessing) {
+        const { shouldProcessTemplateForJsonInput } = await inquirer.prompt({
+          type: 'confirm',
+          name: 'shouldProcessTemplateForJsonInput',
+          message: `Would you like to run the ${path.basename(template.resolvedTemplatePath)} template for JSON file: '${path.basename(jsonInputPath.path)}'?`,
+          default: true,
+        });
+
+        if(!shouldProcessTemplateForJsonInput) {
+          continue;
+        }
+      }
+
       const filename = Handlebars.compile(template.filenameTemplate)(jsonInput);
       const directory = Handlebars.compile(template.directoryTemplate)(jsonInput);
 
@@ -174,9 +187,8 @@ function loadManifests(templatesDirectoryPath: string): Manifest[] {
       const templatePath = path.join(path.dirname(templateManifestPath), manifestTemplate.templatePath);
 
       return {
+        ...manifestTemplate,
         resolvedTemplatePath: templatePath,
-        filenameTemplate: manifestTemplate.filenameTemplate,
-        directoryTemplate: manifestTemplate.directoryTemplate,
       };
     });
 

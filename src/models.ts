@@ -21,12 +21,14 @@ export interface ManifestTemplateDto {
   templatePath: string;
   directoryTemplate: string;
   filenameTemplate: string;
+  promptBeforeProcessing?: boolean;
 }
 
 export interface ManifestTemplate {
   resolvedTemplatePath: string;
   directoryTemplate: string;
   filenameTemplate: string;
+  promptBeforeProcessing?: boolean;
 }
 
 export interface Manifest {

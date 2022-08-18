@@ -82,7 +82,13 @@ const templateHandlerMap: Record<string, HandlerParams> = {
         continue;
       }
 
-      fs.writeFileSync(outputFilePath, handler(template.resolvedTemplatePath, helpers, jsonInput, jsonInputs), 'utf-8');
+      const fileContents = handler(template.resolvedTemplatePath, helpers, jsonInput, jsonInputs);
+
+      if(!_.trim(fileContents)) {
+        continue;
+      }
+
+      fs.writeFileSync(outputFilePath, fileContents, 'utf-8');
     }
   }
 
